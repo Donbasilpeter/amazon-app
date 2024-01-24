@@ -23,6 +23,7 @@ const getWebViewScript = () => {
     }
   `;
   };
+  
 
   const Script = {
     getWebViewScript,

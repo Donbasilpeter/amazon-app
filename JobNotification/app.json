@@ -18,9 +18,14 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.donbasilpeter.JobNotification"
     },
-    "web": {
+    "web": {},
+    "extra": {
+      "eas": {
+        "projectId": "43b00205-6a55-4483-a8c4-ca2e0004e250"
+      }
     }
   }
 }

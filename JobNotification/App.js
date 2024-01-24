@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Vibration } from 'react-native';
 import { WebView } from 'react-native-webview';
 import Script from './helper.js';
@@ -6,10 +6,44 @@ import Script from './helper.js';
 const JobFinder = () => {
   const webViewRef = useRef(null);
   const [jobFound, setJobFound] = useState(false);
+  const [backgroundColor, setBackgroundColor] = useState('#ffffff'); // Initial background color
   const webViewScript = Script.getWebViewScript();
 
+  useEffect(() => {
+    let intervalId;
 
- 
+    const startColorChanging = () => {
+      intervalId = setInterval(() => {
+        setBackgroundColor(getRandomColor());
+      }, 1000); // Change color every second
+    };
+
+    const stopColorChanging = () => {
+      clearInterval(intervalId);
+    };
+
+    if (jobFound) {
+      // Start changing background color when job is found
+      startColorChanging();
+
+      // Simulating a job search duration (e.g., 10 seconds)
+      setTimeout(() => {
+        // Stop changing background color after a certain duration (e.g., 10 seconds)
+        stopColorChanging();
+        setJobFound(false);
+      }, 10000); // Stop changing color after 10 seconds (adjust as needed)
+    }
+
+    // Cleanup function to stop the interval when the component unmounts or job is found
+    return () => {
+      stopColorChanging();
+    };
+  }, [jobFound]);
+
+  const getRandomColor = () => {
+    // Generate a random hex color code
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+  };
 
   const onLoadEnd = () => {
     const searchText = 'St. Thomas, ON Canada';
@@ -32,14 +66,14 @@ const JobFinder = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor }]}>
       {jobFound ? (
         <View style={styles.overlay}>
-          <Text style={styles.overlayText}>Job Found in the app!</Text>
+          <Text style={styles.overlayText}>Job Found in the St Thomas!</Text>
         </View>
       ) : (
         <View style={styles.overlay}>
-          <Text style={styles.overlayText}>No job found.</Text>
+          <Text style={styles.overlayText}>No job found in St. Thomas</Text>
         </View>
       )}
       <WebView
@@ -60,7 +94,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'grey',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -68,6 +102,8 @@ const styles = StyleSheet.create({
   },
   overlayText: {
     color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
 });
